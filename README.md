@@ -4,16 +4,48 @@ Traditional training methods for solo track athletes have hit a plateau, with li
 
 This robotic system uses advanced algorithms to follow lines on a track and adjust to various training regimens. With the integration of obstacle detection, it ensures safety for solitary training sessions. The accompanying app offers user-friendly control and access to essential training data, empowering athletes to refine their strategies and improve performance with actionable insights.
 
-For instructions on how to use the RoboRacer, visit https://robo-racer.github.io/RoboRacer/usage
+For instructions on how to use the RoboRacer, visit [the usage documentation](https://robo-racer.github.io/RoboRacer/usage).
 
 # Table of Contents
 
 - [Hardware](#hardware)
     - [Electronics Diagram](#electronics-diagram)
     - [Wire Diagrams](#wire-diagrams)
+        - [RoboRacer Wire Diagram](#roboracer-wire-diagram)
+        - [Color Sensor Wire Diagram](#color-sensor-wire-diagram)
 - [Obstacle Avoidance](#obstacle-avoidance)
+    - [Components](#components)
+        - [Sensor Specifications](#sensor-specifications)
+        - [System Implementation](#system-implementation)
+        - [System Setup and Operation](#system-setup-and-operation)
+    - [The Code](#the-code)
+        - [Initialization](#initialization)
+        - [Main Loop](#main-loop)
+        - [Obstacle Detection](#obstacle-detection)
 - [Line Tracking](#line-tracking)
+    - [Components](#components-1)
+        - [Hardware Setup](#hardware-setup)
+        - [Sensor Placement](#sensor-placement)
+    - [The Code](#the-code-1)
+        - [Initialization](#initialization-1)
+        - [Main Loop](#main-loop-1)
+        - [Compilation and Upload](#compilation-and-upload)
 - [User Communication](#user-communication)
+    - [Installation](#installation)
+        - [Using PlatformIO](#using-platformio)
+    - [The Project](#the-project)
+        - [ESP32-S3-DevkitM-1](#esp32-s3-devkitm-1)
+            - [Components](#components-2)
+            - [Memory Space Allocation via Partitioning](#memory-space-allocation-via-partitioning)
+    - [The Code](#the-code-2)
+        - [Web Server Code](#web-server-code)
+        - [Web Application Code](#web-application-code)
+        - [Libraries Used](#libraries-used)
+        - [Compilation](#compilation)
+        - [Usage Example](#usage-example)
+    - [Extra Notes](#extra-notes)
+        - [Why Are We Deleting Static?](#why-are-we-deleting-static)
+    - [Sources](#sources)
 
 # Hardware
 
@@ -38,31 +70,213 @@ The RoboRacer was built from scratch using the following parts:
 | [OpenMV Cam H7 Plus](https://www.sparkfun.com/products/16989) | For line tracking. |
 | [Ultrasonic sensor: MB1260 XL-MaxSonar-EZL0](https://www.digikey.com/en/products/detail/maxbotix-inc./MB1260-000/7896804?utm_adgroup=General&utm_source=google&utm_medium=cpc&utm_campaign=PMax%20Shopping_Product_Zombie%20SKUs&utm_term=&utm_content=General&utm_id=go_cmp-17815035045_adg-_ad-__dev-c_ext-_prd-7896804_sig-CjwKCAiA6KWvBhAREiwAFPZM7uXuBr5x2_9tsJn6quUxP_FLTGHsh9kwDjljyNy30PU-59ozLj2mChoCTV8QAvD_BwE&gad_source=1&gclid=CjwKCAiA6KWvBhAREiwAFPZM7uXuBr5x2_9tsJn6quUxP_FLTGHsh9kwDjljyNy30PU-59ozLj2mChoCTV8QAvD_BwE) | For detecting obstacles in front of the robot. |
 
----
 ## Electronics Diagram
 
 
----
 ## Wire Diagrams
 
 Wire diagrams used during the development process:
 
-## RoboRacer Wire Diagram
+### RoboRacer Wire Diagram
 ![RoboRacer wire diagram](/images/RoboRacer_Wire_Diagram.png)
 
-## Color Sensor Wire Diagram
+### Color Sensor Wire Diagram
 ![Color sensor and multiplexer wire diagram](/images/ColorSensorMultiplexerWireDiagram.jpg)
 
 ---
 # Obstacle Avoidance
 
-<!-- TODO -->
+Line tracking is implemented using the [MB1260 XL-MaxSonar-EZL0](https://www.digikey.com/en/products/detail/maxbotix-inc./MB1260-000/7896804?utm_adgroup=General&utm_source=google&utm_medium=cpc&utm_campaign=PMax%20Shopping_Product_Zombie%20SKUs&utm_term=&utm_content=General&utm_id=go_cmp-17815035045_adg-_ad-__dev-c_ext-_prd-7896804_sig-CjwKCAiA6KWvBhAREiwAFPZM7uXuBr5x2_9tsJn6quUxP_FLTGHsh9kwDjljyNy30PU-59ozLj2mChoCTV8QAvD_BwE&gad_source=1&gclid=CjwKCAiA6KWvBhAREiwAFPZM7uXuBr5x2_9tsJn6quUxP_FLTGHsh9kwDjljyNy30PU-59ozLj2mChoCTV8QAvD_BwE)
+
+## Components
+
+![Ultrasonic sensor components](/images/ultrasonic_sensor_components.png)
+
+| Key Components  | Description |
+| --------------- | ----------- |
+| Pin 1 (BW)      | Controls serial output. |
+| Pin 2 (PW/AN)   | Outputs pulse width for range or analog voltage envelope. |
+| Pin 3 (AN)      | Outputs analog voltage representation of range. |
+| Pin 4 (RX)      | Controls ranging; high for continuous ranging, low to stop. |
+| Pin 5 (TX)      | Outputs serial data. |
+| Pin 6 (+5V/Vcc) | Power supply input. |
+| Pin 7 (GND)     | Ground. |
+
+### Sensor Specifications
+
+- **Detection Range**: 0 cm to 765 cm (up to 1068 cm for select models).
+- **Resolution**: 1 cm.
+- **Power Requirements**: 3.3V to 5.5V.
+- **Operation Frequency**: 42 kHz.
+
+### System Implementation
+
+- **Sensor Placement**: Mount the sensors at strategic locations to cover the required detection area.
+- **Data Processing**: The microcontroller processes sensor data to determine the presence and distance of obstacles.
+- **Behavior Adjustment**: Based on the sensor input, stops for advancement.
+
+### System Setup and Operation
+
+The system setup involves connecting the MB1260 sensor to the microcontroller using the defined trigger and echo pins. During operation, the sensor continuously sends and receives ultrasonic pulses, with the microcontroller processing the serial data to determine the distance to obstacles.
+
+For more detailed specifications, refer to the [MB1260 datasheet](https://maxbotix.com/pages/xl-maxsonar-ez-datasheet)
+
+## The Code
+### Initialization
+
+We initialize the ultrasonic sensor and other necessary components:
+
+```
+UltrasonicSensor ultrasonicSensor(TRIG_PIN, ECHO_PIN);
+
+void setup() {
+    // Initialize Serial, UART, and other components
+    ultrasonicSensor.init();
+    myServo.attach(servoPin);
+    myMotor.attach(motorPin);
+}
+```
+
+### Main Loop
+
+The main loop continuously checks for obstacles and adjusts the robot's movement:
+
+```
+void loop() {
+    ultrasonicSensor.checkObstacle();
+    if (stop) {
+        myMotor.writeMicroseconds(1500); // Stop the motor
+    } else {
+        // Normal operations
+        myServo.write(120);
+        delay(2000);
+        myServo.write(60);
+        delay(2000);
+    }
+}
+```
+
+### Obstacle Detection
+
+The checkObstacle function in the UltrasonicSensor class checks the distance and stops the motor if an obstacle is detected:
+
+```
+void UltrasonicSensor::checkObstacle() {
+    distance = getDistance();
+    if (distance <= OBSTACLE_DISTANCE_THRESHOLD) {
+        stop = true;
+        myMotor.writeMicroseconds(1500); // Stop the motor
+    } else {
+        stop = false;
+    }
+}
+```
 
 ---
 # Line Tracking
 
-<!-- TODO -->
-Line tracking is implemented using the OpenMV Cam H7 Plus. 
+Line tracking is implemented using the [OpenMV Cam H7 Plus](https://www.sparkfun.com/products/16989)
+
+## Components
+
+![OpenMV camera components](/images/openmv_components.png)
+
+| Key Components | Description |
+| -------------- | ----------- |
+| P0 (RX)        | Receiving data via UART |
+| P1 (TX)        | Transmitting data via UART |
+| Vin            | Power supply unit |
+| GND            | Ground |
+
+### Hardware Setup
+
+- OpenMV Cam H7 Plus: To capture and process the image data.
+- Arduino Board: To process data from the OpenMV Cam and control the motors.
+- Motors and Motor Driver: To move the robot along the line.
+
+### Sensor Placement
+
+- Place the OpenMV Cam H7 Plus at the front of the robot, angled slightly downward to capture the line.
+- Ensure the camera is securely mounted and the field of view covers the line to be followed.
+
+## The Code
+
+The line tracking algorithm with the OpenMV Cam H7 Plus involves capturing images, detecting lines within the image, calculating the error based on the line's angle, and sending correction signals to the Arduino to adjust the robot's direction.
+
+1. Capture Image: Continuously capture images using the OpenMV Cam.
+2. Detect Lines: Use image processing techniques to detect lines in the captured images.
+3. Calculate Error: Determine the deviation of the detected line from the desired orientation.
+4. Send Correction Signals: Transmit the error value to the Arduino via UART for motor adjustments.
+
+### Initialization
+
+The camera is initialized with RGB565 pixel format for better line detection, and the frame size is set to QQVGA for faster processing. UART communication is established to send data to the Arduino. Additionally, the target angle for the line is set to 90 degrees, and a threshold is defined for allowable error.
+
+```
+import sensor
+import image
+import time
+import pyb
+
+ENABLE_LENS_CORR = False  # Turn on for straighter lines...
+
+sensor.reset()
+sensor.set_pixformat(sensor.RGB565)  # RGB565 format for better line detection
+sensor.set_framesize(sensor.QQVGA)
+sensor.skip_frames(time=2000)
+clock = time.clock()
+
+target_theta = 90  # Assuming we want the line to be vertical
+some_threshold = 20
+
+# Initialize UART
+uart = pyb.UART(3, 115200)
+```
+
+### Main Loop
+
+The main loop captures an image and optionally corrects for lens distortion. It then detects lines in the image, selects the strongest line based on the rho value, and calculates the angular error relative to the target angle. Depending on whether the error is within the defined threshold, the line is drawn in green or red. Finally, the error value is sent to the Arduino via UART, and the FPS is printed for debugging purposes.
+
+```
+while True:
+    clock.tick()
+    img = sensor.snapshot()
+    if ENABLE_LENS_CORR:
+        img.lens_corr(1.8)  # Correction for lens distortion
+
+    lines = img.find_lines(threshold=1000, theta_margin=25, rho_margin=25)
+    if lines:
+        # Sort lines based on the magnitude of the rho value
+        lines.sort(key=lambda x: abs(x.rho()))
+        strongest_line = lines[0]  # Select the strongest line
+
+        detected_theta = strongest_line.theta()
+        error = detected_theta - target_theta  # Calculate the angular error
+        if abs(error) < some_threshold:
+            img.draw_line(strongest_line.line(), color=(0, 255, 0))
+            print("Angle: %d, Error: %d" % (detected_theta, error))
+        else:
+            img.draw_line(strongest_line.line(), color=(255, 0, 0))
+            print("Angle: %d, Error: %d - OUT OF BOUNDS" % (detected_theta, error))
+        
+        # Send the error value to Arduino
+        uart.write("%d\n" % error)
+    print("FPS %f" % clock.fps())
+```
+
+### Compilation and Upload
+
+1. OpenMV IDE:
+    - Open the OpenMV IDE.
+    - Connect your OpenMV Cam H7 Plus to your computer.
+    - Copy the code into the script editor.
+    - Save the script to the OpenMV Cam.
+
+2. Arduino:
+    - Use the Arduino IDE to write a corresponding script to receive the error value via UART and adjust motor speeds accordingly.
+    - Upload the script to the Arduino board.
+
+For more detailed specifications, refer to the [OpenMV Cam H7 Plus Datasheet](https://openmv.io/products/openmv-cam-h7-plus)
 
 ---
 # User Communication
@@ -75,6 +289,11 @@ Line tracking is implemented using the OpenMV Cam H7 Plus.
 2. Copy [esp32-s3-devkitm-1.json](./public/esp32-s3-devkitm-1.json) from the public directory in this project and paste it into the .platformio/platforms/espressif32/boards folder on your personal system.
 3. In the web-ui directory, run the npm install command
 3. Follow [Compilation](#compilation) steps below to compile and run this project 
+
+### NPM
+The modules used for the front end web application are npm modules, which can be installed by running `npm install --legacy-peer-deps` while in the `web-ui/` directory.
+
+> Note: --legacy-peer-deps is necessary due to conflicting versions of the node modules.
 
 ## The Project
 
@@ -177,6 +396,78 @@ The above code details how we respond to HTTP requests. When we receive a reques
 
 ### Web Application Code
 
+The front end of the web application is written in React JS. Leveraging components, there are many included in `src/components`:
+
+**`Controls`:** The controls component is simply a container for its child components, `SpeedProfiles` and `StartStopButton`
+```
+<div className='controls-container'>
+    <h1>Controls</h1>
+
+    <SpeedProfiles className='inputs-container' />
+    <StartStopButton className='start-stop-container' />]
+</div>
+```
+
+**`SpeedProfiles`:** The speed profiles component handles the user's inputs and directly communicates with the ESP32 so that it can set the desired speed. 
+
+When the user clicks the 'set' button on the page, a POST request is sent to the ESP32:
+```
+function handleClick() {
+    const data = {
+        time: time,
+        distance: distance
+    }
+
+    console.log('submit inputs:', data);
+
+    fetch('/postData', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    })
+}
+```
+
+Similarly, when a user chooses to save the speed profile for future use, a POST request is sent:
+```
+function handleSave() {
+    alert('Functionality not yet implemented!')
+
+    const data = {
+        name: name,
+        time: time,
+        distance: distance
+    }
+
+    fetch('/addSpeedProfile', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    })
+}
+```
+
+These speed profiles are saved and loaded from a JSON file, populated into objects:
+```
+function useSpeedProfiles() {
+    return useMemo(() => {
+        return Object.keys(speedProfilesData).map((profileName) => ({
+            value: profileName,
+            label: profileName,
+        }));
+    }, []);
+}
+```
+
+> Note: this feature is not yet implemented (see [Next Steps](#next-steps))
+
+**`StartStopButton`:** The start and stop buttons also send requests to the ESP32 using POST requests:
+```
+// add fixed code
+```
+
+**`Performance`:** The performance component displays the data gathered from the RoboRacer during a run using a GET request:
+```
+// yet to be implemented
+```
 
 ### Libraries Used
 - [WiFi.h](https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/src/WiFi.h)
@@ -193,6 +484,8 @@ The above code details how we respond to HTTP requests. When we receive a reques
     - Builds user interface to route to pages
 - [React Joystick Component](https://www.npmjs.com/package/react-joystick-component)
     - Allows usage of joystick on a dev page, to direct RoboRacer
+- [Material UI](https://mui.com/material-ui/)
+    - Styled components to add to the code, to make the CSS simpler
 
 
 ## Compilation
@@ -219,3 +512,6 @@ We delete the /static directory and update index.html to no longer include it be
 [Esspressif ESP32-S3-DevkitM-1 User Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitm-1.html)
 []()
 []()
+
+---
+# Next Steps
