@@ -425,7 +425,6 @@ First we set up our SPIFFS (Serial Peripheral Interface Flash File System), whic
 ```
 cpp
 server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
-server.serveStatic("/static/", SPIFFS, "/");
 ```
 This sets our server (which was set up on port 80) to serve our web app when connected to. The ESP32 WiFi is set up as an Access Point, which means we are simply allowing devices to connect with us, but not providing actual WiFi.
 ```
@@ -433,10 +432,8 @@ cpp
 WiFi.softAP(ssid, password, 1, 0, 1);
 
 IPAddress IP = WiFi.softAPIP();
-Serial.print("AP IP address: ");
-Serial.println(IP);
 ```
-This code sets up the Access Point with ssid (wifi name) "ESP32-Access-Point", password "123456789", and several other options, notably limiting the maximum number of connections to 1, so no others can connect when the user is connected. We are able to output the IP address, which we give the user on the side of the RoboRacer.
+This code sets up the Access Point with ssid (wifi name) "ESP32-Access-Point", password "123456789", and several other options, notably limiting the maximum number of connections to 1, so no others can connect when the user is connected. The IP Address is 192.168.4.1, which we will the user on the side of the RoboRacer in it's final implementation.
 
 ```
 cpp
@@ -464,6 +461,38 @@ The above code details how we respond to HTTP requests. When we receive a reques
         Serial.println(_name);
     }
     //...
+```
+
+To communicate directly to the user, we utilize websockets, which allow us to send messages to our WebSocket, ws, by using ws.textAll(), which sends a message to our polling websocket element on the web application. We are also able to tell when the user connects and disconnects from the application using websockets via built in event headers WS_EVT_CONNECT and WS_EVT_DISCONNECT.
+
+```cpp
+AsyncWebSocket ws("/ws");
+
+void notifyClients(String message) {
+  ws.textAll(message);
+}
+
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  switch (type) {
+    case WS_EVT_CONNECT:
+      Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+      break;
+    case WS_EVT_DISCONNECT:
+      Serial.printf("WebSocket client #%u disconnected\n", client->id());
+      break;
+    case WS_EVT_DATA:
+      handleWebSocketMessage(arg, data, len);
+      break;
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+      break;
+  }
+}
+
+void initWebSocket() {
+  ws.onEvent(onEvent);
+  server.addHandler(&ws);
+}
 ```
 
 ### Web Application Code
