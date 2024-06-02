@@ -8,7 +8,7 @@ On the interface, [control buttons](#controlling-the-roboracer) and [performance
 
 The web UI is easily accessible from a device (preferably a mobile device) that connects to WiFi. 
 
-1. Turn on the RoboRacer, and the website will spin up.
+1. Turn on the RoboRacer and [compile](https://robo-racer.github.io/RoboRacer/#compilation) the website.
 
 2. On your device, navigate to the WiFi settings. Find the WiFi host on the device and connect to it.
 
