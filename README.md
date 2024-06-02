@@ -50,6 +50,9 @@ For instructions on how to use the RoboRacer, visit [the usage documentation](ht
     - [Extra Notes](#extra-notes)
         - [Why Are We Deleting Static?](#why-are-we-deleting-static)
     - [Sources](#sources)
+- [Next Steps](#next-steps)
+    - [Features to Add](#features-to-add)
+    - [Improvements](#improvements)
 
 # Hardware
 
@@ -642,12 +645,12 @@ We delete the /static directory and update index.html to no longer include it be
 
 Given the time constraints of this project, many functionalities were not implemented and some could be improved upon.
 
-## Features to add:
+## Features to Add
 - Follow-Me Mode: in this mode, the RoboRacer will autonomously follow the runner while maintaing a parallel distance
 - RoboRacer follows lines and intersecting lines on a track
 - Real-time metrics displayed on the interface: battery life, performance metrics (especially as the race is going)
 - Save speed profiles to ESP32
 
-## Improvements:
+## Improvements
 - Grey-out start button on web UI until the robot is ready to go
 - Extract JSON data files to live on ESP32 instead of in the React website code
