@@ -614,5 +614,7 @@ We delete the /static directory and update index.html to no longer include it be
 Given the time constraints of this project, many functionalities were not implemented. On the to-do list is:
 
 - Follow-Me Mode: in this mode, the RoboRacer will autonomously follow the runner while maintaing a parallel distance
-- RoboRacer follows intersecting lines on a track
-- Real-time metrics displayed on the interface: battery life, performance metrics as the race is going
+- RoboRacer follows lines and intersecting lines on a track
+- Real-time metrics displayed on the interface: battery life, performance metrics (especially as the race is going)
+- Extract JSON data files to live on ESP32 instead of in the React website code
+    - Save speed profiles to ESP32
