@@ -1,0 +1,5 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, 2 x 0.14 mm² shielded	0	m	W10, W12, W13, W14, W15, W16, W17, W18, W19, W20, W21, W22, W8, W9
+2	Connector, Dupont, Female, 12 pins	1		H7_I2C
+3	Connector, Dupont, Female, 6 pins	6		COLOR_SENSOR1, COLOR_SENSOR2, COLOR_SENSOR3, COLOR_SENSOR4, COLOR_SENSOR5, COLOR_SENSOR6
+4	Connector, Dupont, Male, 24 pins	1		MULTIPLEXER

@@ -1,0 +1,6 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, 2 x 0.14 mm² shielded	0	m	W1, W2, W3
+2	Connector, 8 pins	1		PDU
+3	Connector, EC5, Female, 2 pins	1		BATTERY
+4	Connector, EC5, Male, 2 pins	1		ESC_POWER
+5	Connector, Terminal, 2 pins	1		H7_POWER_IN

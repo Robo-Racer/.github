@@ -1,0 +1,20 @@
+Id	Description	Qty	Unit	Designators
+1	Cable, 1 x 0.14 mm² shielded	0	m	W23, W24, W25
+2	Cable, 2 x 0.14 mm² shielded	0	m	W1, W10, W12, W13, W14, W15, W16, W17, W18, W19, W2, W20, W21, W22, W26, W27, W28, W3, W4, W8, W9
+3	Cable, 3 x 0.14 mm² shielded	0	m	W11, W5, W6, W7
+4	Connector, 8 pins	1		PDU
+5	Connector, Barrel, Female, 3 pins	1		ESC_MOTOR
+6	Connector, Barrel, Male, 3 pins	1		MOTOR
+7	Connector, Dupont, Female, 10 pins	1		H7_GPIO
+8	Connector, Dupont, Female, 12 pins	1		H7_I2C
+9	Connector, Dupont, Female, 22 pins	1		H7_PWM
+10	Connector, Dupont, Female, 3 pins	3		HALL_EFFECT_SENSOR, MOTOR_FAN, SERVO
+11	Connector, Dupont, Female, 4 pins	2		H7_CAN0, H7_CAN1
+12	Connector, Dupont, Female, 6 pins	12		COLOR_SENSOR1, COLOR_SENSOR2, COLOR_SENSOR3, COLOR_SENSOR4, COLOR_SENSOR5, COLOR_SENSOR6, H7_SPI0, H7_SPI1, H7_UART0, H7_UART1, H7_UART2, H7_UART3
+13	Connector, Dupont, Female, 9 pins	1		ESC
+14	Connector, Dupont, Male, 24 pins	1		MULTIPLEXER
+15	Connector, Dupont, female, 12 pins	1		H7_I2S
+16	Connector, EC5, Female, 2 pins	1		BATTERY
+17	Connector, EC5, Male, 2 pins	1		ESC_POWER
+18	Connector, Soldered, 4 pins	11		NEOPIXEL_LED1, NEOPIXEL_LED10, NEOPIXEL_LED11, NEOPIXEL_LED2, NEOPIXEL_LED3, NEOPIXEL_LED4, NEOPIXEL_LED5, NEOPIXEL_LED6, NEOPIXEL_LED7, NEOPIXEL_LED8, NEOPIXEL_LED9
+19	Connector, Terminal, 2 pins	1		H7_POWER_IN

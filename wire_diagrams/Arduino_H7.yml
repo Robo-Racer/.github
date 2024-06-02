@@ -1,0 +1,325 @@
+connectors:
+  H7_GPIO: 
+    pinlabels: [3.3V, D0, D1, D2, D3, D4, D5, D6, GND, GND]
+    type: Dupont
+    subtype: Female
+  H7_I2C:
+    pinlabels: [3.3V, GND, SDA1, SCL1, 3.3V, GND, SDA0, SCL0, 3.3V, GND, SDA2, SCL2]
+    type: Dupont
+    subtype: Female
+  H7_CAN0: &template1
+    pinlabels: [5V, TX, RX, GND]
+    type: Dupont
+    subtype: Female
+  H7_CAN1: 
+    <<: *template1
+  H7_PWM:
+    pinlabels: [A0, A1, A2, A3, A4, A5, A6, A7, REFP, REFN, GND, PWM0, PWM1, PWM2, PWM3, PWM4, PWM5, PWM6, PWM7, PWM8, PWM9, GND]
+    type: Dupont
+    subtype: Female
+  H7_UART0: &template2
+    pinlabels: [3.3V, TX, RX, RTS, CTS, GND]
+    type: Dupont
+    subtype: Female
+  H7_UART1: 
+    <<: *template2
+  H7_SPI0: &template3
+    pinlabels: [3.3V, CS, CK, MISO, MOSI, GND]
+    type: Dupont
+    subtype: Female
+  H7_SPI1: 
+    <<: *template3
+  H7_UART2: 
+    <<: *template2
+  H7_UART3: 
+    <<: *template2
+  H7_I2S:
+    pinlabels: [3.3V, CK, WS, SD1, SD0, GND, 3.3V, SCK, FS, D0, D1, GND]
+    type: Dupont
+    subtype: female
+  H7_POWER_IN:
+    pinlabels: [5V, GND]
+    type: Terminal
+  
+  PDU:
+    pinlabels: [11.1V, GND, 11.1V, GND, 5V, GND, 3.3V, GND]
+
+  BATTERY:
+    pinlabels: [11.1V, GND]
+    type: EC5
+    subtype: Female
+  
+  MOTOR:
+    pinlabels: [A, B, C]
+    type: Barrel
+    subtype: Male
+  MOTOR_FAN:
+    pinlabels: [VIN, GND, PWM]
+    type: Dupont
+    subtype: Female
+  ESC_POWER:
+    pinlabels: [11.1V, GND]
+    type: EC5
+    subtype: Male
+  ESC_MOTOR:
+    pinlabels: [A, B, C]
+    type: Barrel
+    subtype: Female
+  ESC:
+    pinlabels: [GND, VOUT, PWM, GND, VOUT, PWM, GND, VOUT, PWM]
+    type: Dupont
+    subtype: Female
+  SERVO:
+    pinlabels: [GND, VIN, PWM]
+    type: Dupont
+    subtype: Female
+  HALL_EFFECT_SENSOR:
+    pinlabels: [GND, VCC, SIGNAL]
+    type: Dupont
+    subtype: Female
+  MULTIPLEXER:
+    pinlabels: [VIN, GND, SDA, SCL, RST, A0, A1, A2, SD0, SC0, SD1, SC1, SD2, SC2, SD3, SC3, SD4, SC4, SD5, SC5, SD6, SC6, SD7, SC7]
+    type: Dupont
+    subtype: Male
+  COLOR_SENSOR1: &template4
+    pinlabels: [VIN, 3.3Vo, GND, SCL, SDA, INT]
+    type: Dupont
+    subtype: Female
+  COLOR_SENSOR2:
+    <<: *template4
+  COLOR_SENSOR3:
+    <<: *template4
+  COLOR_SENSOR4:
+    <<: *template4
+  COLOR_SENSOR5:
+    <<: *template4
+  COLOR_SENSOR6:
+    <<: *template4
+  NEOPIXEL_LED1: &template5
+    pinlabels: [GND, DIN, 5VDC, GND]
+    type: Soldered
+  NEOPIXEL_LED2:
+    <<: *template5
+  NEOPIXEL_LED3:
+    <<: *template5
+  NEOPIXEL_LED4:
+    <<: *template5
+  NEOPIXEL_LED5:
+    <<: *template5
+  NEOPIXEL_LED6:
+    <<: *template5
+  NEOPIXEL_LED7:
+    <<: *template5
+  NEOPIXEL_LED8:
+    <<: *template5
+  NEOPIXEL_LED9:
+    <<: *template5
+  NEOPIXEL_LED10:
+    <<: *template5
+  NEOPIXEL_LED11:
+    <<: *template5
+  
+  
+
+cables:
+  W1: &template6
+    wirecount: 2
+    gauge: 0.14 mm2
+    colors: [RD, BK]
+    show_equiv: true
+    shield: true
+  W2: 
+    <<: *template6
+  W3:
+    <<: *template6
+  W4:
+    <<: *template6
+  W5:
+    wirecount: 3
+    gauge: 0.14 mm2
+    colors: [YE, OG, BU]
+    show_equiv: true
+    shield: true
+  W6: &template7
+    wirecount: 3
+    gauge: 0.14 mm2
+    colors: [BK, OG, GY]
+    show_equiv: true
+    shield: true
+  W7:
+    <<: *template7
+  W8:
+    <<: *template6
+  W9:
+    <<: *template6
+  W10: &template8
+    wirecount: 2
+    gauge: 0.14 mm2
+    color_code: DIN
+    show_equiv: true
+    shield: true
+  W11:
+    wirecount: 3
+    gauge: 0.14 mm2
+    colors: [RD, BU, BK]
+    show_equiv: true
+    shield: true
+  W12:
+    <<: *template8
+  W13:
+    <<: *template8
+  W14:
+    <<: *template8
+  W15:
+    <<: *template8
+  W16:
+    <<: *template8
+  W17:
+    <<: *template8
+  W18: &template9
+    wirecount: 2
+    gauge: 0.14 mm2
+    colors: [RD, BK]
+    show_equiv: true
+    shield: true
+  W19:
+    <<: *template9
+  W20:
+    <<: *template9
+  W21:
+    <<: *template9
+  W22:
+    <<: *template9
+  W23: &template10
+    wirecount: 1
+    gauge: 0.14 mm2
+    colors: [WH]
+    show_equiv: true
+    shield: true
+  W24:
+    <<: *template10
+  W25:
+    <<: *template10
+  W26: &template11
+    wirecount: 2
+    gauge: 0.14 mm2
+    colors: [RD, BK]
+    show_equiv: true
+    shield: true
+  W27:
+    <<: *template11
+  W28:
+    <<: *template11
+  
+
+connections:
+  -
+    - BATTERY: [1-2]
+    - W1: [1-2]
+    - PDU: [1-2]
+  -
+    - PDU: [5-6]
+    - W2: [1-2]
+    - H7_POWER_IN: [1-2]
+  - 
+    - PDU: [3-4]
+    - W3: [1-2]
+    - ESC_POWER: [1-2]
+  -
+    - ESC: [1-2]
+    - W4: [2-1]
+    - MOTOR_FAN: [2-1]
+  -
+    - ESC_MOTOR: [1-3]
+    - W5: [1-3]
+    - MOTOR: [1-3]
+  - 
+    - ESC: [4-6]
+    - W6: [1-3]
+    - SERVO: [1-3]
+  -
+    - MULTIPLEXER: [9-10]
+    - W12: [1-2]
+    - COLOR_SENSOR1: [5-4]
+  -
+    - MULTIPLEXER: [11-12]
+    - W13: [1-2]
+    - COLOR_SENSOR2: [5-4]
+  -
+    - MULTIPLEXER: [13-14]
+    - W14: [1-2]
+    - COLOR_SENSOR3: [5-4]
+  -
+    - MULTIPLEXER: [15-16]
+    - W15: [1-2]
+    - COLOR_SENSOR4: [5-4]
+  -
+    - MULTIPLEXER: [17-18]
+    - W16: [1-2]
+    - COLOR_SENSOR5: [5-4]
+  -
+    - MULTIPLEXER: [19-20]
+    - W17: [1-2]
+    - COLOR_SENSOR6: [5-4]
+  -
+    - H7_I2C: [1-2]
+    - W8: [1-2]
+    - COLOR_SENSOR1: [1, 3]
+  -
+    - COLOR_SENSOR2: [1, 3]
+    - W18: [1-2]
+    - COLOR_SENSOR1: [2-3]
+  -
+    - COLOR_SENSOR2: [2-3]
+    - W19: [1-2]
+    - COLOR_SENSOR3: [1, 3]
+  -
+    - COLOR_SENSOR4: [1, 3]
+    - W20: [1-2]
+    - COLOR_SENSOR3: [2-3]
+  -
+    - COLOR_SENSOR4: [2-3]
+    - W21: [1-2]
+    - COLOR_SENSOR5: [1, 3]
+  -
+    - COLOR_SENSOR6: [1, 3]
+    - W22: [1-2]
+    - COLOR_SENSOR5: [2-3]
+  -
+    - H7_I2C: [7-8]
+    - W10: [1-2]
+    - MULTIPLEXER: [3-4]
+  - 
+    - H7_I2C: [5-6]
+    - W9: [1-2]
+    - MULTIPLEXER: [1-2]
+  -
+    - H7_PWM: [11-12]
+    - W7: [1-2]
+    - ESC: [7, 9]
+  -
+    - H7_CAN0: [1, 4]
+    - W26: [1-2]
+    - NEOPIXEL_LED1: [3-4]
+  -
+    - H7_CAN0: [1, 4]
+    - W27: [1-2]
+    - NEOPIXEL_LED2: [3-4]
+  -
+    - H7_CAN0: [1, 4]
+    - W28: [1-2]
+    - NEOPIXEL_LED3: [3-4]
+  -
+    - H7_GPIO: [2]
+    - W23: [1]
+    - NEOPIXEL_LED1: [2]
+  -
+    - H7_GPIO: [3]
+    - W24: [1]
+    - NEOPIXEL_LED2: [2]
+  -
+    - H7_GPIO: [4]
+    - W25: [1]
+    - NEOPIXEL_LED3: [2]
+
+  

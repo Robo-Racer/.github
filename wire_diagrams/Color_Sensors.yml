@@ -1,0 +1,125 @@
+connectors:
+  H7_I2C:
+    pinlabels: [3.3V, GND, SDA1, SCL1, 3.3V, GND, SDA0, SCL0, 3.3V, GND, SDA2, SCL2]
+    type: Dupont
+    subtype: Female
+  MULTIPLEXER:
+    pinlabels: [VIN, GND, SDA, SCL, RST, A0, A1, A2, SD0, SC0, SD1, SC1, SD2, SC2, SD3, SC3, SD4, SC4, SD5, SC5, SD6, SC6, SD7, SC7]
+    type: Dupont
+    subtype: Male
+  COLOR_SENSOR1: &template4
+    pinlabels: [VIN, 3.3Vo, GND, SCL, SDA, INT]
+    type: Dupont
+    subtype: Female
+  COLOR_SENSOR2:
+    <<: *template4
+  COLOR_SENSOR3:
+    <<: *template4
+  COLOR_SENSOR4:
+    <<: *template4
+  COLOR_SENSOR5:
+    <<: *template4
+  COLOR_SENSOR6:
+    <<: *template4
+
+
+cables:
+  W8: &template6
+    wirecount: 2
+    gauge: 
+    colors: [RD, BK]
+    show_equiv: true
+    shield: true
+  W9:
+    <<: *template6
+  W10: &template8
+    wirecount: 2
+    gauge: 0.14 mm2
+    color_code: DIN
+    show_equiv: true
+    shield: true
+  W12:
+    <<: *template8
+  W13:
+    <<: *template8
+  W14:
+    <<: *template8
+  W15:
+    <<: *template8
+  W16:
+    <<: *template8
+  W17:
+    <<: *template8
+  W18: &template9
+    wirecount: 2
+    gauge: 0.14 mm2
+    colors: [RD, BK]
+    show_equiv: true
+    shield: true
+  W19:
+    <<: *template9
+  W20:
+    <<: *template9
+  W21:
+    <<: *template9
+  W22:
+    <<: *template9
+  
+
+connections:
+  -
+    - MULTIPLEXER: [9-10]
+    - W12: [1-2]
+    - COLOR_SENSOR1: [5-4]
+  -
+    - MULTIPLEXER: [11-12]
+    - W13: [1-2]
+    - COLOR_SENSOR2: [5-4]
+  -
+    - MULTIPLEXER: [13-14]
+    - W14: [1-2]
+    - COLOR_SENSOR3: [5-4]
+  -
+    - MULTIPLEXER: [15-16]
+    - W15: [1-2]
+    - COLOR_SENSOR4: [5-4]
+  -
+    - MULTIPLEXER: [17-18]
+    - W16: [1-2]
+    - COLOR_SENSOR5: [5-4]
+  -
+    - MULTIPLEXER: [19-20]
+    - W17: [1-2]
+    - COLOR_SENSOR6: [5-4]
+  -
+    - H7_I2C: [1-2]
+    - W8: [1-2]
+    - COLOR_SENSOR1: [1, 3]
+  -
+    - COLOR_SENSOR2: [1, 3]
+    - W18: [1-2]
+    - COLOR_SENSOR1: [2-3]
+  -
+    - COLOR_SENSOR2: [2-3]
+    - W19: [1-2]
+    - COLOR_SENSOR3: [1, 3]
+  -
+    - COLOR_SENSOR4: [1, 3]
+    - W20: [1-2]
+    - COLOR_SENSOR3: [2-3]
+  -
+    - COLOR_SENSOR4: [2-3]
+    - W21: [1-2]
+    - COLOR_SENSOR5: [1, 3]
+  -
+    - COLOR_SENSOR6: [1, 3]
+    - W22: [1-2]
+    - COLOR_SENSOR5: [2-3]
+  -
+    - H7_I2C: [7-8]
+    - W10: [1-2]
+    - MULTIPLEXER: [3-4]
+  - 
+    - H7_I2C: [5-6]
+    - W9: [1-2]
+    - MULTIPLEXER: [1-2]
