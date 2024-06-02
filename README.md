@@ -539,4 +539,6 @@ We delete the /static directory and update index.html to no longer include it be
 
 Given the time constraints of this project, many functionalities were not implemented. On the to-do list is:
 
-- Follow-Me Mode: in this mode, the RoboRacer will follow the runner, measuring their speed and time for a given distance
+- Follow-Me Mode: in this mode, the RoboRacer will autonomously follow the runner while maintaing a parallel distance
+- RoboRacer follows intersecting lines on a track
+- Real-time metrics displayed on the interface: battery life, performance metrics as the race is going
