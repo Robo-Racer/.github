@@ -42,7 +42,6 @@ For instructions on how to use the RoboRacer, visit [the usage documentation](ht
         - [Web Application Code](#web-application-code)
         - [Libraries Used](#libraries-used)
         - [Compilation](#compilation)
-        - [Usage Example](#usage-example)
     - [Extra Notes](#extra-notes)
         - [Why Are We Deleting Static?](#why-are-we-deleting-static)
     - [Sources](#sources)
@@ -461,7 +460,31 @@ function useSpeedProfiles() {
 
 **`StartStopButton`:** The start and stop buttons also send requests to the ESP32 using POST requests:
 ```
-// add fixed code
+function handleStart() {
+    console.log("Start RoboRacer");
+
+    const data = {
+        directive: 'start'
+    }
+
+    fetch('/start', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    })
+}
+
+function handleStop() {
+    console.log("Stop RoboRacer");
+
+    const data = {
+        directive: 'stop'
+    }
+
+    fetch('/stop', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    })
+}
 ```
 
 **`Performance`:** The performance component displays the data gathered from the RoboRacer during a run using a GET request:
@@ -502,8 +525,6 @@ function useSpeedProfiles() {
 6. Run the platformio "Build", "Upload", "Build Filesystem Image", and "Upload Filesystem Image" commands (which can be found in the PlatformIO portion of VSCode's extention bar, or by using PlatformIO's commands in the terminal) 
 7. You are now ready to connect your device to the ESP32's WIFI Access Point!
 
-## Usage Example
-
 ## Extra Notes
 ### Why Are We Deleting Static?
 We delete the /static directory and update index.html to no longer include it because spiffs can only store files up to 32 bytes long. data\static\js\main.72aff11b.js.map is 35 bytes long, and thus we remove the static directory from the name to reduce it to 28 bytes.
@@ -515,3 +536,7 @@ We delete the /static directory and update index.html to no longer include it be
 
 ---
 # Next Steps
+
+Given the time constraints of this project, many functionalities were not implemented. On the to-do list is:
+
+- Follow-Me Mode: in this mode, the RoboRacer will follow the runner, measuring their speed and time for a given distance
