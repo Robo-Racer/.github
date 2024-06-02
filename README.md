@@ -30,6 +30,11 @@ For instructions on how to use the RoboRacer, visit [the usage documentation](ht
         - [Initialization](#initialization-1)
         - [Main Loop](#main-loop-1)
         - [Compilation and Upload](#compilation-and-upload)
+- [Speed Control](#speed-control)
+    - [Sensor Placement](#sensor-placement-1)
+    - [The Code](#the-code-2)
+        - [Initialization](#initialization-2)
+        - [Runtime Code](#runtime-code)
 - [User Communication](#user-communication)
     - [Installation](#installation)
         - [Using PlatformIO](#using-platformio)
@@ -37,7 +42,7 @@ For instructions on how to use the RoboRacer, visit [the usage documentation](ht
         - [ESP32-S3-DevkitM-1](#esp32-s3-devkitm-1)
             - [Components](#components-2)
             - [Memory Space Allocation via Partitioning](#memory-space-allocation-via-partitioning)
-    - [The Code](#the-code-2)
+    - [The Code](#the-code-3)
         - [Web Server Code](#web-server-code)
         - [Web Application Code](#web-application-code)
         - [Libraries Used](#libraries-used)
@@ -278,6 +283,69 @@ while True:
 For more detailed specifications, refer to the [OpenMV Cam H7 Plus Datasheet](https://openmv.io/products/openmv-cam-h7-plus)
 
 ---
+# Speed Control
+
+Speed control is implemented using a [NJK-5002C Hall Effect Sensor](https://www.amazon.com/HiLetgo-NJK-5002C-Proximity-3-Wires-Normally/dp/B01MZYYCLH/ref=sr_1_12?crid=1DWAL653S785H&keywords=Hall+effect+sensor+-+US5881LUA&qid=1707163489&sprefix=hall+effect+sensor+-+us5881lua%2Caps%2C207&sr=8-12)
+
+![NJK-5002C Hall Effect Sensor](/images/hall_effect_sensor.png)
+
+| Key Components | Description |
+| -------------- | ----------- |
+| GPIO 5 | Used to receive data from the sensor |
+| Vin | Power supply input.(5V) |
+| GND | Ground |
+
+## Sensor Placement
+
+- Place the hall effect sensor close to the main axel of the robot.
+- Add a small magnet in line with the hall effect sensor on the axel.
+- Adjust how close the sensor is to the axel so it only detects the magnet when it’s close. (the sensor should have a red led on the back when it detects the magnet)
+
+## The Code
+### Initialization
+
+The hall effect sensor is initialized by setting its pin to an input.
+```
+pinMode(hallPin, INPUT);
+```
+
+Then to get data for the speed we have to initialize two interrupts, one that counts a rotation for the hall effect sensor and one that calculates the speed every half a second.
+```
+attachInterrupt(hallPin, count_rotation, FALLING);  //attaching the interrupt
+// execute getRPS every 500ms
+if (ITimer0.attachInterruptInterval(500000, get_speed))
+{
+  Serial.print(F("Starting ITimer0 OK"));
+}
+else{
+  Serial.println(F("Failed to start ITimer0"));
+}
+```
+
+### Runtime Code
+During runtime the code utilizes the get speed interrupt function to update the motors speed based on it’s current speed and target speed.
+```
+void get_speed(){
+ rps = rotations*2;
+ speedMPS = rps*metersPerRotation;
+ rotations = 0;
+
+
+ //changes the target PWM based on the new speed
+ if (speedMPS > targetSpeed && targetPWM > 1550)
+ {
+   targetPWM --;
+ }
+ else if (speedMPS < targetSpeed && targetPWM < 2000){
+   targetPWM ++;
+ }
+}
+void count_rotation() {
+   rotations ++;
+}
+```
+
+---
 # User Communication
 
 ## Installation
@@ -319,7 +387,8 @@ The modules used for the front end web application are npm modules, which can be
 
 ### Memory Space Allocation via Partitioning
 Generally, the ESP32 should have the [default partitioning scheme for 8MB](https://github.com/espressif/arduino-esp32/blob/master/tools/partitions/default_8MB.csv?plain=1), but due to the size needed to be allocated for the filesystem image, a new partitioning set, [partitions_custom.csv](./partitions_custom.csv), has been created. As can be seen below, we reallocated memory from app1 to also be included in the spiffs section.
-```ini
+```
+ini
 #default_8MB.csv
 # Name,   Type, SubType, Offset,  Size, Flags
 nvs,      data, nvs,     0x9000,  0x5000,
@@ -343,7 +412,8 @@ coredump, data, coredump,0x7F0000,0x10000,
 ### Web Server Code
 The ESP32 is treated as an asynchronous web server, responding to a connected users HTTP requests as it recieves them. It holds the primary job of communication between the user and the RoboRacer, utilizing its UART (Universal asynchronous receiver-transmitter) capabilities to recieve and transmit data to the Portenta H7. This section will serve as a breakdown of how the code in [main.cpp](./src/main.cpp) accomplishes this task.
 
-```cpp
+```
+cpp
 if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 {
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -352,12 +422,14 @@ if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 ```
 First we set up our SPIFFS (Serial Peripheral Interface Flash File System), which will allow us to format our files as listed in the ./data directory. SPIFFS can now act as a filesystem, which we use in the following code.
 
-```cpp
+```
+cpp
 server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
 server.serveStatic("/static/", SPIFFS, "/");
 ```
 This sets our server (which was set up on port 80) to serve our web app when connected to. The ESP32 WiFi is set up as an Access Point, which means we are simply allowing devices to connect with us, but not providing actual WiFi.
-```cpp
+```
+cpp
 WiFi.softAP(ssid, password, 1, 0, 1);
 
 IPAddress IP = WiFi.softAPIP();
@@ -366,7 +438,8 @@ Serial.println(IP);
 ```
 This code sets up the Access Point with ssid (wifi name) "ESP32-Access-Point", password "123456789", and several other options, notably limiting the maximum number of connections to 1, so no others can connect when the user is connected. We are able to output the IP address, which we give the user on the side of the RoboRacer.
 
-```cpp
+```
+cpp
 server.onRequestBody([](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       if (request->method() == HTTP_POST) {
          if (!handlepostData(request, data)) {
@@ -516,7 +589,8 @@ function handleStop() {
 2. Delete the contents of the ./data directory
 3. Copy the contents of ./web-ui/build and paste them to ./data
 4. In the [index.html](./data/index.html) file, search for the "static" keyword using ctrl+f. Update both instances of the word to reflect the new file structure, as demonstrated below ([why are we doing this?](#why-are-we-deleting-static)):
-```html
+```
+html
 <script defer="defer" src="/static/js/main.72aff11b.js"> --> <script defer="defer" src="/js/main.72aff11b.js">
 
 <link href="/static/css/main.cf5403a1.css" rel="stylesheet"> --> <link href="/css/main.cf5403a1.css" rel="stylesheet">
