@@ -78,7 +78,8 @@ The RoboRacer was built from scratch using the following parts:
 | [Ultrasonic sensor: MB1260 XL-MaxSonar-EZL0](https://www.digikey.com/en/products/detail/maxbotix-inc./MB1260-000/7896804?utm_adgroup=General&utm_source=google&utm_medium=cpc&utm_campaign=PMax%20Shopping_Product_Zombie%20SKUs&utm_term=&utm_content=General&utm_id=go_cmp-17815035045_adg-_ad-__dev-c_ext-_prd-7896804_sig-CjwKCAiA6KWvBhAREiwAFPZM7uXuBr5x2_9tsJn6quUxP_FLTGHsh9kwDjljyNy30PU-59ozLj2mChoCTV8QAvD_BwE&gad_source=1&gclid=CjwKCAiA6KWvBhAREiwAFPZM7uXuBr5x2_9tsJn6quUxP_FLTGHsh9kwDjljyNy30PU-59ozLj2mChoCTV8QAvD_BwE) | For detecting obstacles in front of the robot. |
 
 ## Electronics Diagram
-
+This is the high-level electronic diagram:
+![RoboRacer wire diagram](/images/High_Level_electronics_diagram.png)
 
 ## Wire Diagrams
 
