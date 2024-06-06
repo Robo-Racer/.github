@@ -12,7 +12,7 @@ The web UI is easily accessible from a device (preferably a mobile device) that 
 
 2. On your device, navigate to the WiFi settings. Find the WiFi host on the device and connect to it.
 
-3. Open a browser on the device and navigate to the URL ``
+3. Open a browser on the device and navigate to the URL `http://192.168.4.1`
 
 **Done!** You should now see the web interface and be able to control the robot.
 
@@ -22,7 +22,7 @@ The web UI is easily accessible from a device (preferably a mobile device) that 
 
 The RoboRacer has two customizable components: **time** and **distance**. These values are up to the user, dependent on the desired track event the user is training for. The speed of the robot is then calculated so that it reaches the inputted distance within the given time.
 
-**Time**: Enter the time you wish to finish the race by in **seconds**.
+**Time**: Enter the time you wish to finish the race by in the format **mm:ss**, representing **minutes** and **seconds**.
 
 **Distance**: Enter the distance (in **meters**) you want the RoboRacer to meet the time by.
 
