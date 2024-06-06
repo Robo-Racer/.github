@@ -391,8 +391,7 @@ The modules used for the front end web application are npm modules, which can be
 
 ### Memory Space Allocation via Partitioning
 Generally, the ESP32 should have the [default partitioning scheme for 8MB](https://github.com/espressif/arduino-esp32/blob/master/tools/partitions/default_8MB.csv?plain=1), but due to the size needed to be allocated for the filesystem image, a new partitioning set, [partitions_custom.csv](./partitions_custom.csv), has been created. As can be seen below, we reallocated memory from app1 to also be included in the spiffs section.
-```
-ini
+```ini
 #default_8MB.csv
 # Name,   Type, SubType, Offset,  Size, Flags
 nvs,      data, nvs,     0x9000,  0x5000,
@@ -416,8 +415,7 @@ coredump, data, coredump,0x7F0000,0x10000,
 ### Web Server Code
 The ESP32 is treated as an asynchronous web server, responding to a connected users HTTP requests as it recieves them. It holds the primary job of communication between the user and the RoboRacer, utilizing its UART (Universal asynchronous receiver-transmitter) capabilities to recieve and transmit data to the Portenta H7. This section will serve as a breakdown of how the code in [main.cpp](./src/main.cpp) accomplishes this task.
 
-```
-cpp
+```cpp
 if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 {
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -426,21 +424,18 @@ if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
 ```
 First we set up our SPIFFS (Serial Peripheral Interface Flash File System), which will allow us to format our files as listed in the ./data directory. SPIFFS can now act as a filesystem, which we use in the following code.
 
-```
-cpp
+```cpp
 server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
 ```
 This sets our server (which was set up on port 80) to serve our web app when connected to. The ESP32 WiFi is set up as an Access Point, which means we are simply allowing devices to connect with us, but not providing actual WiFi.
-```
-cpp
+```cpp
 WiFi.softAP(ssid, password, 1, 0, 1);
 
 IPAddress IP = WiFi.softAPIP();
 ```
 This code sets up the Access Point with ssid (wifi name) "ESP32-Access-Point", password "123456789", and several other options, notably limiting the maximum number of connections to 1, so no others can connect when the user is connected. The IP Address is 192.168.4.1, which we will the user on the side of the RoboRacer in it's final implementation.
 
-```
-cpp
+```cpp
 server.onRequestBody([](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       if (request->method() == HTTP_POST) {
          if (!handlepostData(request, data)) {
@@ -504,7 +499,7 @@ void initWebSocket() {
 The front end of the web application is written in React JS. Leveraging components, there are many included in `src/components`:
 
 **`Controls`:** The controls component is simply a container for its child components, `SpeedProfiles` and `StartStopButton`
-```
+```js
 <div className='controls-container'>
     <h1>Controls</h1>
 
@@ -516,7 +511,7 @@ The front end of the web application is written in React JS. Leveraging componen
 **`SpeedProfiles`:** The speed profiles component handles the user's inputs and directly communicates with the ESP32 so that it can set the desired speed. 
 
 When the user clicks the 'set' button on the page, a POST request is sent to the ESP32:
-```
+```js
 function handleClick() {
     const data = {
         time: time,
@@ -533,7 +528,7 @@ function handleClick() {
 ```
 
 Similarly, when a user chooses to save the speed profile for future use, a POST request is sent:
-```
+```js
 function handleSave() {
     alert('Functionality not yet implemented!')
 
@@ -551,7 +546,7 @@ function handleSave() {
 ```
 
 These speed profiles are saved and loaded from a JSON file, populated into objects:
-```
+```js
 function useSpeedProfiles() {
     return useMemo(() => {
         return Object.keys(speedProfilesData).map((profileName) => ({
@@ -565,7 +560,7 @@ function useSpeedProfiles() {
 > Note: this feature is not yet implemented (see [Next Steps](#next-steps))
 
 **`StartStopButton`:** The start and stop buttons also send requests to the ESP32 using POST requests:
-```
+```js
 function handleStart() {
     console.log("Start RoboRacer");
 
@@ -615,6 +610,8 @@ function handleStop() {
     - Allows usage of joystick on a dev page, to direct RoboRacer
 - [Material UI](https://mui.com/material-ui/)
     - Styled components to add to the code, to make the CSS simpler
+- [Dayjs](https://day.js.org/)
+    - To allow for receiving time inputs
 
 
 ## Compilation
@@ -622,8 +619,7 @@ function handleStop() {
 2. Delete the contents of the ./data directory
 3. Copy the contents of ./web-ui/build and paste them to ./data
 4. In the [index.html](./data/index.html) file, search for the "static" keyword using ctrl+f. Update both instances of the word to reflect the new file structure, as demonstrated below ([why are we doing this?](#why-are-we-deleting-static)):
-```
-html
+```html
 <script defer="defer" src="/static/js/main.72aff11b.js"> --> <script defer="defer" src="/js/main.72aff11b.js">
 
 <link href="/static/css/main.cf5403a1.css" rel="stylesheet"> --> <link href="/css/main.cf5403a1.css" rel="stylesheet">
