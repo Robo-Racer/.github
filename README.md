@@ -619,6 +619,7 @@ function handleStop() {
 2. Delete the contents of the ./data directory
 3. Copy the contents of ./web-ui/build and paste them to ./data
 4. In the [index.html](./data/index.html) file, search for the "static" keyword using ctrl+f. Update both instances of the word to reflect the new file structure, as demonstrated below ([why are we doing this?](#why-are-we-deleting-static)):
+
 ```html
 <script defer="defer" src="/static/js/main.72aff11b.js"> --> <script defer="defer" src="/js/main.72aff11b.js">
 
